@@ -6,7 +6,7 @@ func BubbleSort(arr []int) []int {
 	if len(arr) <= 1 {
 		return arr
 	} else {
-//Ver1:想像有兩條arr，都在互相比較
+		//Ver1:想像有兩條arr在互相比較
 		// for i := 0; i < len(arr); i++ {
 		// 	index := false //
 		// 	for j := i + 1; j < len(arr); j++ {
@@ -15,14 +15,15 @@ func BubbleSort(arr []int) []int {
 		// 			index = true
 		// 		}
 		// // 	}
-		// for i := 0; i < len(arr)-1; i++ {
-		// 	index := false //
-		// 	for j := 0; j < len(arr)-1-i; j++ {
-		// 		if arr[j+1] < arr[j] {
-		// 			arr[j], arr[j+1] = arr[j+1], arr[j]
-		// 			index = true
-		// 		}
-		// 	}
+		//Ver2:同一個陣列每次比較往後移動n格(j) 比較n-1次(i)
+		for i := 0; i < len(arr)-1; i++ {
+			index := false //
+			for j := 0; j < len(arr)-1-i; j++ {
+				if arr[j+1] < arr[j] {
+					arr[j], arr[j+1] = arr[j+1], arr[j]
+					index = true
+				}
+			}
 			if !index {
 				break
 			}
