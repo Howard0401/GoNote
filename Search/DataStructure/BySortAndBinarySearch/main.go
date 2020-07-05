@@ -1,5 +1,11 @@
 package main
 
+/*
+1.建立包含使用者ID與密碼的資料結構
+2.逐行讀入並存取在allStr的slice中
+3.先經由快速排序，再進行Binary Search
+4.找出符合的ID後，退出或再執行
+*/
 import (
 	"bufio"
 	"fmt"
@@ -7,8 +13,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
-		"time"
+	"time"
 )
+
 type QQ struct {
 	QQuser int
 	QQpass string
@@ -41,7 +48,7 @@ func QuickSortStruct(arr []QQ) []QQ {
 		return myarr
 	}
 }
- 
+
 func BinSearch(arr []QQ, data int) int {
 	left := 0
 	right := len(arr) - 1
@@ -57,7 +64,6 @@ func BinSearch(arr []QQ, data int) int {
 	}
 	return -1
 }
-
 
 func main() {
 	path := "..\\QQ.txt"
@@ -82,8 +88,8 @@ func main() {
 	}
 	fmt.Println("印出在記憶體中")
 	time.Sleep(time.Second)
-	start:=time.Now()
-  fmt.Println("開始排序",len(allStr))
+	start := time.Now()
+	fmt.Println("開始排序", len(allStr))
 	allStr = QuickSortStruct(allStr)
 
 	flag := true
@@ -93,17 +99,12 @@ func main() {
 		var QQ int
 		fmt.Scanf("%d\n", &QQ)
 		// start := time.Now()
-		index := BinSearch(allStr,QQ)
-		if index == -1{
+		index := BinSearch(allStr, QQ)
+		if index == -1 {
 			fmt.Println("找不到")
-		}else {
-			fmt.Println("找到",index,allStr[index].QQuser,allStr[index].QQpass)
+		} else {
+			fmt.Println("找到", index, allStr[index].QQuser, allStr[index].QQpass)
 		}
-		// for j := 0; j < N; j++ {
-		// 	if allStr[j].QQuser == QQ {
-		// 		fmt.Println(j, allStr[j].QQuser, allStr[j].QQpass)
-		// 	}
-		// }
 		fmt.Println("耗時", time.Since(start))
 		fmt.Println("是否繼續查詢?(Y/N)")
 		fmt.Scanln(&choose)
