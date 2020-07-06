@@ -57,7 +57,6 @@ func InsertionSort(arr []QQ, left, right int) {
 		}
 		arr[j] = temp //插入
 	}
-
 }
 
 func QuickSortPlus(arr []QQ) { //快速排序的核心
