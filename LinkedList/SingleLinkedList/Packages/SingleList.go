@@ -2,6 +2,7 @@ package SingleLinkedList
 
 import (
 	"fmt"
+	"strings"
 )
 
 //抽象方法
@@ -172,5 +173,48 @@ func (list *SingleList) DeleteNodeByIndex(index int) {
 		list.length--
 		return
 	}
+}
 
+func (list *SingleList) FindString(data string) {
+	head := list.head.next
+	fmt.Println("122434")
+	for head.next != nil {
+		if strings.Contains(head.value.(string), data) {
+			fmt.Println(head.value)
+		}
+		head = head.next
+	}
+}
+
+//求中間節點
+func (list *SingleList) GetMid() *Node {
+	if list.head.next == nil {
+		return nil
+	} else {
+		head1 := list.head
+		head2 := list.head
+		for head2 != nil && head2.next != nil {
+			head1 = head1.next
+			head2 = head2.next.next
+		}
+		return head1
+	}
+}
+
+func (list *SingleList) ReverseList() {
+	if list.head == nil || list.head.next == nil {
+		fmt.Println("illigal list")
+		return
+	} else {
+		var pre *Node = nil
+		var cur *Node = list.head.next
+		for cur != nil {
+			curNext := cur.next
+			cur.next = pre //反轉(因為第一格沒裝東西是nil)
+			pre = cur
+			cur = curNext
+		}
+		list.head.next.next = nil //這行其實golang不用寫，是要避免指標洩漏所以才要把另一端的節點接再nil後面
+		list.head.next = pre
+	}
 }
