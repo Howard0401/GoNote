@@ -1,34 +1,35 @@
 syntax = "proto3";
 package v1;
+// option go_package=".;v1";
 
 import "google/protobuf/timestamp.proto";
-import "third_party/google/api/annotations.proto";
-import "third_party/protoc-gen-swagger/options/annotations.proto";
+// import "google/api/annotations.proto";
+// import "protoc-gen-swagger/options/annotations.proto";
 
 // import "google/api/annotations.proto";
 // import "protoc-gen-swagger/options/annotations.proto";
-// option go_package = "v1";
+// option go_package = "v1";  
 
-option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
-    info:{
-      title:"ToDo service";
-      version:"1.0";
-      contact:{
-        name:"golang-grpc-rest-microservice-todo service",
-        url: "https://github.com/Tzuhaochen/golang-grpc-rest-microservice-todo "
-        email:"chenhoward0401@gmai.com"
-      };
-    };
-    schemes: HTTP;
-    consumes:"application/json";
-    produces:"application/json";
-    responses: {
-      key:"ˋ404";
-      value: {
-        description:""
-      }
-    }
-};
+// option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+//     info:{
+//       title:"ToDo service";
+//       version:"1.0";
+//       contact:{
+//         name:"golang-grpc-rest-microservice-todo service",
+//         url: "https://github.com/Tzuhaochen/golang-grpc-rest-microservice-todo "
+//         email:"chenhoward0401@gmai.com"
+//       };
+//     };
+//     schemes: HTTP;
+//     consumes:"application/json";
+//     produces:"application/json";
+//     responses: {
+//       key:"ˋ404";
+//       value: {
+//         description:""
+//       }
+//     }
+// };
 
 
 message ToDo {
@@ -91,39 +92,39 @@ message ReadAllResponse {
 service ToDoService {
   
   rpc Create(CreateRequest) returns (CreateResponse) {
-    option (google.api.http) = {
-      post: "/v1/todo"
-      body:"*"
-    };
+    // option (google.api.http) = {
+    //   post: "/v1/todo"
+    //   body:"*"
+    // };
   }
 
   rpc Read(ReadRequest) returns (ReadResponse) {
-    option (google.api.http) = {
-          get: "/v1/todo/{id}"
-      };
+    // option (google.api.http) = {
+    //       get: "/v1/todo/{id}"
+    //   };
   }
 
   rpc Update(UpdateRequest) returns (UpdateResponse) {
-    option (google.api.http) = {
-      put: "/v1/todo/{toDo.id}"
-      body:"*"
-      additional_bindings {
-        patch:"/v1/todo/{toDo.id}"
-        body:"*"
-      }
-    };
+    // option (google.api.http) = {
+    //   put: "/v1/todo/{toDo.id}"
+    //   body:"*"
+    //   additional_bindings {
+    //     patch:"/v1/todo/{toDo.id}"
+    //     body:"*"
+    //   }
+    // };
   }
 
   rpc Delete(DeleteRequest) returns (DeleteResponse){
-    option (google.api.http) = {
-      delete: "v1/todo/{toDo.id}"
-    };
+    // option (google.api.http) = {
+    //   delete: "v1/todo/{toDo.id}"
+    // };
   }
 
   rpc ReadAll(ReadAllRequest) returns (ReadAllResponse){
-    option (google.api.http) = {
-      get: "/v1/todo/all"
-    };
+    // option (google.api.http) = {
+    //   get: "/v1/todo/all"
+    // };
   }
 }
 

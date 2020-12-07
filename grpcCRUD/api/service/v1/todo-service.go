@@ -19,16 +19,16 @@ const (
 
 //初始化db
 
-type toDoServiceServer struct {
+type ToDoServiceServer struct {
 	db *sql.DB
 }
 
-func NewToDoServiceServer(db *sql.DB) v1.ToDoServiceServer {
-	return &toDoServiceServer{db: db}
+func NewToDoServiceServer(db *sql.DB) *ToDoServiceServer {
+	return &ToDoServiceServer{db: db}
 }
 
 //檢查api版本
-func (s *toDoServiceServer) checkAPI(api string) error {
+func (s *ToDoServiceServer) checkAPI(api string) error {
 	if len(api) > 0 {
 		if apiVersion != api {
 			msg := "unsupported API version" + apiVersion
@@ -38,8 +38,11 @@ func (s *toDoServiceServer) checkAPI(api string) error {
 	return nil
 }
 
+func (s *ToDoServiceServer) mustEmbedUnimplementedToDoServiceServer() {
+}
+
 //連接資料庫
-func (s *toDoServiceServer) Connect(ctx context.Context) (*sql.Conn, error) {
+func (s *ToDoServiceServer) Connect(ctx context.Context) (*sql.Conn, error) {
 	c, err := s.db.Conn(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Unknown, "連接資料庫失敗"+err.Error())
@@ -47,7 +50,7 @@ func (s *toDoServiceServer) Connect(ctx context.Context) (*sql.Conn, error) {
 	return c, nil
 }
 
-func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (*v1.CreateResponse, error) {
+func (s *ToDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (*v1.CreateResponse, error) {
 	//檢查是否API符合規則
 	if err := s.checkAPI(req.Api); err != nil {
 		return nil, err
@@ -73,7 +76,7 @@ func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (
 	return &v1.CreateResponse{Api: apiVersion, Id: id}, nil
 }
 
-func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.ReadResponse, error) {
+func (s *ToDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.ReadResponse, error) {
 
 	if err := s.checkAPI(req.Api); err != nil {
 		return nil, err
@@ -109,7 +112,7 @@ func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.
 	return &v1.ReadResponse{Api: apiVersion, ToDo: &td}, nil
 }
 
-func (s *toDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (*v1.UpdateResponse, error) {
+func (s *ToDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (*v1.UpdateResponse, error) {
 	if err := s.checkAPI(req.Api); err != nil {
 		return nil, err
 	}
@@ -142,7 +145,7 @@ func (s *toDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (
 	}, nil
 }
 
-func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {
+func (s *ToDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {
 	if err := s.checkAPI(req.Api); err != nil {
 		return nil, err
 	}
@@ -165,7 +168,7 @@ func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (
 	return &v1.DeleteResponse{Api: req.Api, Deleted: rows}, nil
 }
 
-func (s *toDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest) (*v1.ReadAllResponse, error) {
+func (s *ToDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest) (*v1.ReadAllResponse, error) {
 	if err := s.checkAPI(req.Api); err != nil {
 		return nil, err
 	}

@@ -7,12 +7,14 @@ import (
 	"fmt"
 	v1 "grpcCRUD/api/service/v1"
 	grpc "grpcCRUD/pkg/grpc"
+	"grpcCRUD/pkg/rest"
 
 	conf "grpcCRUD/conf"
 )
 
 type Config struct {
 	GRPCPort            string
+	HTTPPort            string
 	DataStoreDBHost     string
 	DataStoreDBUser     string
 	DataStroeDBPassword string
@@ -25,6 +27,7 @@ var cfg Config
 func init() {
 	cfg := Config{}
 	flag.StringVar(&cfg.GRPCPort, "grpc-port", conf.Port, "gRPC port to bind")
+	flag.StringVar(&cfg.HTTPPort, "http-port", "", "Http port to bind")
 	flag.StringVar(&cfg.DataStoreDBHost, "db-host", conf.DbHost, "db host")
 	flag.StringVar(&cfg.DataStoreDBUser, "db-user", conf.DbUser, "db-user")
 	flag.StringVar(&cfg.DataStroeDBPassword, "db-passward", conf.DbPassword, "db-password")
@@ -40,6 +43,10 @@ func RunServer() error {
 		return fmt.Errorf("invalid TCP port for gRPC server %s", cfg.GRPCPort)
 	}
 
+	if len(cfg.HTTPPort) == 0 {
+		return fmt.Errorf("invalid TCP port for HTTP server: %s", cfg.HTTPPort)
+	}
+
 	param := "parseTime=true"
 	//連接資料庫字串
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?%s",
@@ -49,6 +56,7 @@ func RunServer() error {
 		cfg.DataStoreDBSchema,
 		param,
 	)
+
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return fmt.Errorf("連接數據失敗: %v", err)
@@ -56,5 +64,11 @@ func RunServer() error {
 	defer db.Close()
 
 	v1API := v1.NewToDoServiceServer(db)
+
+	// run HTTP gateway
+	go func() {
+		_ = rest.RunServer(ctx, cfg.GRPCPort, cfg.HTTPPort)
+	}()
+
 	return grpc.RunServer(ctx, v1API, cfg.GRPCPort)
 }
