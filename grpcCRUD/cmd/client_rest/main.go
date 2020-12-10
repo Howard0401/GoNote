@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"grpcCRUD/conf"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,7 +18,7 @@ var created struct {
 }
 
 func main() {
-	address := flag.String("server", "http://localhost:8080", "Http gateway Url, eg. http://localhost:8080")
+	address := flag.String("server", "http://localhost:"+conf.HTTPPort, "Http gateway Url, eg. http://localhost:"+conf.HTTPPort)
 	flag.Parse()
 
 	t := time.Now().In(time.UTC)

@@ -8,7 +8,7 @@ import (
 	v1 "grpcCRUD/api/service/v1"
 	conf "grpcCRUD/conf"
 	grpc "grpcCRUD/pkg/grpc"
-	"grpcCRUD/pkg/rest"
+	rest "grpcCRUD/pkg/rest"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -28,7 +28,7 @@ type Config struct {
 func init() {
 	cfg = Config{}
 	flag.StringVar(&cfg.GRPCPort, "grpc-port", conf.Port, "gRPC port to bind")
-	flag.StringVar(&cfg.HTTPPort, "http-port", "", "Http port to bind")
+	flag.StringVar(&cfg.HTTPPort, "http-port", conf.HTTPPort, "Http port to bind")
 	flag.StringVar(&cfg.DataStoreDBHost, "db-host", conf.DbHost, "db host")
 	flag.StringVar(&cfg.DataStoreDBUser, "db-user", conf.DbUser, "db-user")
 	flag.StringVar(&cfg.DataStroeDBPassword, "db-passward", conf.DbPassword, "db-password")
@@ -39,14 +39,14 @@ func init() {
 
 func RunServer() error {
 	ctx := context.Background()
-	fmt.Println(len(cfg.GRPCPort))
+	// fmt.Println(len(cfg.GRPCPort))
 	if len(cfg.GRPCPort) == 0 {
 		return fmt.Errorf("invalid TCP port for gRPC server %s", cfg.GRPCPort)
 	}
-
-	// if len(cfg.HTTPPort) == 0 {
-	// 	return fmt.Errorf("invalid TCP port for HTTP server: %s", cfg.HTTPPort)
-	// }
+	fmt.Println(cfg.HTTPPort)
+	if len(cfg.HTTPPort) == 0 {
+		return fmt.Errorf("invalid TCP port for HTTP server: %s", cfg.HTTPPort)
+	}
 
 	param := "parseTime=true"
 	//連接資料庫字串
