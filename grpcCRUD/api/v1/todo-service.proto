@@ -85,8 +85,7 @@ message ReadAllRequest {
 
 message ReadAllResponse {
   string api = 1;
-  //Slice
-  repeated ToDo set = 2;
+  repeated ToDo toDos = 2;
 }
 
 service ToDoService {

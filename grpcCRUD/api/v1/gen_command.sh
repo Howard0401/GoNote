@@ -4,7 +4,7 @@ protoc --proto_path=. --go_out=. --go-grpc_out=require_unimplemented_servers=fal
 protoc --proto_path=. --grpc-gateway_out=logtostderr=true:. todo-service.proto
 
 
-protoc --proto_path=. --grpc-gateway_out=logtostderr=true:. todo-service.proto
+protoc --proto_path=. --grpc-gateway_out=. --grpc-gateway_opt=logtostderr=true  --grpc-gateway_opt generate_unbound_methods=true todo-service.proto
 --grpc-gateway_opt
 #匯出Swagger(JSON)
 protoc --proto_path=. --swagger_out=logtostderr=true:. todo-service.proto

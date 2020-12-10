@@ -1,39 +1,55 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
-	v1 "grpcCRUD/api/v1"
+	"fmt"
+
+	// v1 "grpcCRUD/api/v1"
 	"log"
 	"time"
+
+	v1 "github.com/i-coder-robot/go-grpc-http-rest-microservice-todo/api/proto/v1"
 
 	conf "grpcCRUD/conf"
 
 	"github.com/golang/protobuf/ptypes"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
+
+const (
+	apiVersion = "v1"
 )
 
 func main() {
-	address := flag.String("server", "127.0.0.1"+conf.Port, "gRPC server in format host:port")
+	// 之前剛看到這個錯誤指令的時候，一時間沒想到太多，┬但對照source code後發現在設定host的時候，沒設定好會出現：Error while dialing dial tcp: address 127.0.0.18999
+	address := flag.String("server", "127.0.0.1:"+conf.Port, "gRPC server in format host:port")
 	flag.Parse()
 	conn, err := grpc.Dial(*address, grpc.WithInsecure())
 	if err != nil {
-		log.Fatal("Client 連接 Server 失敗: %v", err)
+		log.Fatalf("Client connect to  Server failed : %v", err)
 	}
 	defer conn.Close()
 	c := v1.NewToDoServiceClient(conn)
-	id := CreateData(c).GetId()
-	ReadData(c, id)
-	UpdateData(c, id)
-	DeleteData(c, id)
-	ReadAllData(c)
-}
-
-func CreateData(c v1.ToDoServiceClient) *v1.CreateResponse {
-	apiVersion := "v1"
-	//定義上下文超時屬性
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
+	// CreateData(c, ctx)
+	id, ctx := CreateData(c, ctx)
+	ReadData(c, id, ctx)
+	// ctx = ReadData(c, id, ctx)
+	UpdateData(c, 1, ctx)
+	DeleteData(c, id, ctx)
+	ReadAllData(c, ctx)
+}
+
+func CreateData(c v1.ToDoServiceClient, ctx context.Context) (int64, context.Context) {
+	//定義上下文超時屬性
+	// ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// defer cancel()
 	//轉換要插入的時間格式
 	t := time.Now().In(time.UTC)
 	reminder, _ := ptypes.TimestampProto(t)
@@ -49,45 +65,43 @@ func CreateData(c v1.ToDoServiceClient) *v1.CreateResponse {
 		},
 	}
 	CreateRes, err := c.Create(ctx, &CreateReq)
+	id := CreateRes.Id
 	if err != nil {
 		log.Fatalf("Connected to server, but failed to Create: %v", err)
 	}
-	log.Printf("Create success:%v", CreateRes)
+	fmt.Printf("Create success:%v", CreateRes)
 	// id := CreateRes.Id
 	// fmt.Sprintf("#{CreateRes}")
-	return CreateRes
+	return id, ctx
 }
 
-func ReadData(c v1.ToDoServiceClient, id int64) {
-	apiVersion := "v1"
+func ReadData(c v1.ToDoServiceClient, id int64, ctx context.Context) context.Context {
 	//調用Server端的Read方法
 	ReadReq := v1.ReadRequest{Api: apiVersion, Id: id}
 	//定義上下文超時屬性
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// defer cancel()
 
 	ReadRes, err := c.Read(ctx, &ReadReq)
 	if err != nil {
 		log.Fatalf("讀取格式失敗: %v", err)
 	}
 	log.Printf("Read success:", ReadRes)
+	return ctx
 }
 
-func UpdateData(c v1.ToDoServiceClient, id int64) {
-	apiVersion := "v1"
-	//定義上下文超時屬性
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+func UpdateData(c v1.ToDoServiceClient, id int64, ctx context.Context) context.Context {
 	//轉換要插入的時間格式
 	t := time.Now().In(time.UTC)
 	reminder, _ := ptypes.TimestampProto(t)
 	//調用Server端的Update方法
+	fmt.Println(id)
 	UpdateReq := v1.UpdateRequest{
 		Api: apiVersion,
 		ToDo: &v1.ToDo{
 			Id:          id,
-			Title:       "Update Title",
-			Description: "update description",
+			Title:       "Update req.ToDo.Title",
+			Description: "Update req.ToDo.Description" + " updated",
 			Reminder:    reminder,
 		},
 	}
@@ -96,37 +110,53 @@ func UpdateData(c v1.ToDoServiceClient, id int64) {
 		log.Fatalf("Update failed: %v", err)
 	}
 	log.Printf("Update: %v", UpdateRes)
+	return ctx
 }
 
-func DeleteData(c v1.ToDoServiceClient, id int64) {
-	apiVersion := "v1"
-	//超時標準
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+func DeleteData(c v1.ToDoServiceClient, id int64, ctx context.Context) context.Context {
 	//調用Server端的Delete方法
 	DeleteReq := v1.DeleteRequest{
 		Api: apiVersion,
 		Id:  id,
 	}
 	DeleteRes, err := c.Delete(ctx, &DeleteReq)
+
 	if err != nil {
 		log.Fatalf("Dalete failed: %v", err)
 	}
 	log.Printf("Deleted: %v", DeleteRes)
+	return ctx
 }
 
-func ReadAllData(c v1.ToDoServiceClient) {
-	apiVersion := "v1"
-	//超時標準
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	//調用Server端的ReadAll方法
+func ReadAllData(c v1.ToDoServiceClient, ctx context.Context) context.Context {
+	//調用Server層的ReadAll方法
 	ReadAllReq := v1.ReadAllRequest{
 		Api: apiVersion,
 	}
+	// ReadAllRes, err := c.ReadAll(ctx, &ReadAllReq)
 	ReadAllRes, err := c.ReadAll(ctx, &ReadAllReq)
 	if err != nil {
 		log.Fatalf("ReadAll failed: %v", err)
 	}
-	log.Printf("ReadAll result %v", ReadAllRes)
+	log.Printf("ReadAll result %+v", ReadAllRes)
+	return ctx
+}
+
+type ToDoServiceServer struct {
+	db *sql.DB
+}
+
+func NewToDoServiceServer(db *sql.DB) *ToDoServiceServer {
+	return &ToDoServiceServer{db: db}
+}
+
+//檢查api版本
+func (s *ToDoServiceServer) checkAPI(api string) error {
+	if len(api) > 0 {
+		if apiVersion != api {
+			msg := "unsupported API version" + apiVersion
+			return status.Error(codes.Unimplemented, msg)
+		}
+	}
+	return nil
 }
