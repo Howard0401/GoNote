@@ -9,8 +9,7 @@ import (
 	"log"
 	"time"
 
-	v1 "github.com/i-coder-robot/go-grpc-http-rest-microservice-todo/api/proto/v1"
-
+	v1 "grpcCRUD/api/v1"
 	conf "grpcCRUD/conf"
 
 	"github.com/golang/protobuf/ptypes"

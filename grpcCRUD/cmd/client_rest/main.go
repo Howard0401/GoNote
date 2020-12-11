@@ -24,7 +24,6 @@ func main() {
 	t := time.Now().In(time.UTC)
 	pfx := t.Format(time.RFC3339Nano)
 
-	//Create
 	Create(address, pfx)
 
 	Read(address, pfx)
@@ -69,7 +68,7 @@ func Create(address *string, pfx string) {
 }
 
 func Read(address *string, pfx string) {
-	res, err := http.Get(fmt.Sprintf("%s%s%s", *address, "/v1/todo", created.ID))
+	res, err := http.Get(fmt.Sprintf("%s%s/%s", *address, "/v1/todo", created.ID))
 	if err != nil {
 		log.Fatalf("failed to call Read method: %v", err)
 	}

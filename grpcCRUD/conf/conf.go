@@ -1,7 +1,7 @@
 package conf
 
 const (
-	Port          = "8919"
+	Port          = "8921"
 	HTTPPort      = "8253"
 	DbHost        = "127.0.0.1:3306"
 	DbUser        = "root"
