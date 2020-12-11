@@ -21,6 +21,7 @@ func customeTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 
 func Init(lvl int, timeFormat string) error {
 	var err error
+	//Do calls the function f if and only if Do is being called for the first time for this instance of Once
 	onceInit.Do(func() {
 		globalLevel := zapcore.Level(lvl)
 		//high => stderr, low => standard out

@@ -12,7 +12,7 @@ import (
 
 	middleware "grpcCRUD/pkg/rest/middleware"
 
-	logger "grpcCRUD/logger"
+	logger "grpcCRUD/pkg/logger"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime" //注意是v2 v2!!!
 

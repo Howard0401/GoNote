@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 	v1 "grpcCRUD/api/v1"
-	logger "grpcCRUD/logger"
 	middleware "grpcCRUD/pkg/grpc/middleware"
+	logger "grpcCRUD/pkg/logger"
 	"net"
 	"os"
 
