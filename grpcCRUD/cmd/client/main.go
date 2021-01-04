@@ -40,7 +40,7 @@ func main() {
 	id, ctx := CreateData(c, ctx)
 	ReadData(c, id, ctx)
 	// ctx = ReadData(c, id, ctx)
-	UpdateData(c, 1, ctx)
+	UpdateData(c, id, ctx)
 	DeleteData(c, id, ctx)
 	ReadAllData(c, ctx)
 }
