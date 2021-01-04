@@ -22,6 +22,7 @@ func RunServer(ctx context.Context, v1API v1.ToDoServiceServer, port string) err
 
 	//register server 建立伺服器
 	server := grpc.NewServer(opts...)
+	//把方法註冊給grpc server
 	v1.RegisterToDoServiceServer(server, v1API)
 
 	// create a channel to receive msgs 建立一個channel接收訊息

@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
+//將發來的http請求納入log中
 func AddLogger(logger *zap.Logger, h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()

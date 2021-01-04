@@ -19,6 +19,7 @@ protoc --proto_path=. --go_out=. --go-grpc_out=. *.proto
 protoc --proto_path=. --go_out=. --go-grpc_out=require_unimplemented_servers=false:. todo-service.proto
 
 
+# 學習參考
 protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 todo-service.proto
 protoc --proto_path=api/proto/v1 --proto_path=third_party --grpc-gateway_out=logtostderr=true:pkg/api/v1 todo-service.proto
 protoc --proto_path=api/proto/v1 --proto_path=third_party --swagger_out=logtostderr=true:api/swagger/v1 todo-service.proto

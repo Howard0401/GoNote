@@ -7,8 +7,8 @@ import (
 	"fmt"
 	v1 "grpcCRUD/api/service/v1"
 	conf "grpcCRUD/conf"
-	logger "grpcCRUD/logger"
 	grpc "grpcCRUD/pkg/grpc"
+	logger "grpcCRUD/pkg/logger"
 	rest "grpcCRUD/pkg/rest"
 
 	_ "github.com/go-sql-driver/mysql"
