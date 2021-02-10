@@ -1,0 +1,7 @@
+-- CREATE TABLE `todo`
+-- (
+-- 	`ID` bigint NOT NULL UNIQUE  auto_increment ,
+--     `Title` varchar(200) ,
+--     `Description` varchar(200)  , 
+--     `Reminder` timestamp NOT NULL
+-- )
